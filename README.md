@@ -1,6 +1,6 @@
 # GeekBrains 
 ## Java. Уровень 2
-### Разработка сетевого чата
+### Разработка сетевого чата на JavaFX
 
 Является частью проекта https://github.com/gDavidLevy/JavaLevel2
 
