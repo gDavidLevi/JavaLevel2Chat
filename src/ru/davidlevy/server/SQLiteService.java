@@ -10,7 +10,7 @@ public class SQLiteService implements AuthentificationService {
     @Override
     public void start() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:chatter.sqlite");
+            connection = DriverManager.getConnection("jdbc:sqlite:database.sqlite");
         } catch (SQLException e) {
             e.printStackTrace();
         }
