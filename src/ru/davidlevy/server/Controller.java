@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebView;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,12 +25,21 @@ public class Controller implements Initializable {
     public WebView browser;
     @FXML
     public ListView<String> listView;
-    //
-    public static Parametres settings = new Parametres();
-    private static StringBuffer html = new StringBuffer();
-    public ArrayList<String> list = new ArrayList<>();
+
+    static Parametres settings;
+    private static StringBuffer html;
+    public static ArrayList<String> list;
+
     private Server server;
 
+    /* Инициализация статических полей */
+    static {
+        settings = new Parametres();
+        html = new StringBuffer();
+        list = new ArrayList<>();
+    }
+
+    /* Инициализация */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         settings.loadFromXml();
@@ -41,7 +52,7 @@ public class Controller implements Initializable {
         showInPage();
     }
 
-    public void showInPage() {
+    private void showInPage() {
         browser.getEngine().setUserStyleSheetLocation(getClass().getResource("style.css").toString());
         html.delete(0, html.length())
                 .append("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"></head><body>");
@@ -67,7 +78,7 @@ public class Controller implements Initializable {
         int hh = cal.get(Calendar.HOUR_OF_DAY);
         int mm = cal.get(Calendar.MINUTE);
         int ss = cal.get(Calendar.SECOND);
-        return String.format("%d-%02d-%02d %02d:%02d:%02d", year, month, day , hh, mm, ss);
+        return String.format("%d-%02d-%02d %02d:%02d:%02d", year, month, day, hh, mm, ss);
     }
 
     private String timestamp() { // "YYYY-MM-DD HH:MM:SS.SSS"
@@ -76,22 +87,23 @@ public class Controller implements Initializable {
         return timeStamp.toString();
     }
 
-    private void sendMessage() {
+    private void sendMessage() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<font color=\"grey\">[" + getTimeSchtamp() + "]</font>&nbsp;")
                 .append("<font color=\"red\">[SERVER]</font>&nbsp;::&nbsp;")
                 .append(inputArea.getText());
         server.broadcastMsg(stringBuilder.toString());
-        server.getAuthentificationService().saveToHistory(timestamp(),"[SERVER]","", "broadcast", stringBuilder.toString());
+        server.getAuthentificationService().saveToHistory(timestamp(), "[SERVER]", "", "broadcast", stringBuilder.toString());
         inputArea.clear();
         inputArea.requestFocus();
     }
 
-    public void onSendMessageToAll(ActionEvent actionEvent) {
+    public void onSendMessageToAll(ActionEvent actionEvent) throws IOException {
         sendMessage();
     }
 
-    public void onCtrlEnterSendMessage(KeyEvent keyEvent) {
-        if (keyEvent.isControlDown() && keyEvent.getCode().equals(KeyCode.ENTER)) sendMessage();
+    public void onCtrlEnterSendMessage(KeyEvent keyEvent) throws IOException {
+        if (keyEvent.isControlDown() && keyEvent.getCode().equals(KeyCode.ENTER))
+            sendMessage();
     }
 }

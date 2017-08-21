@@ -91,7 +91,8 @@ public class SQLiteService implements AuthentificationService {
             preparedStatement.setString(3, name);
             preparedStatement.execute();
             //
-            if (!getLogin(login).equals(login)) return false;
+            if (!getLogin(login).equals(login))
+                return false;
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
